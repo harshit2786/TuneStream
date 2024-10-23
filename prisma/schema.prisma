@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String    @id @default(uuid())
+  email           String
+  Provider        Provider
+  upvotes         Upvotes[]
+  streams         Stream[]
+  spaces          Space[]   @relation("users")
+  createdSpaces   Space[]   @relation("creator")
+  requestedSpaces Space[]   @relation("request")
+}
+
+model Space {
+  id              String       @id @default(uuid())
+  name            String       @unique
+  creatorId       String
+  creator         User         @relation("creator", fields: [creatorId], references: [id],onDelete: Cascade)
+  streams         Stream[]
+  userIds         User[]       @relation("users")
+  pendingUsers    User[]       @relation("request")
+  type            SpaceType    @default(Public) 
+}
+
+model Stream {
+  id        String     @id @default(uuid())
+  type      StreamType
+  url       String
+  extractId String
+  active    Boolean    @default(true)
+  upvotes   Upvotes[]
+  userId    String
+  user      User       @relation(fields: [userId], references: [id])
+  spaceId   String
+  space     Space      @relation(fields: [spaceId], references: [id],onDelete: Cascade)
+}
+
+model Upvotes {
+  id       String @id @default(uuid())
+  streamId String
+  userId   String
+  user     User   @relation(fields: [userId], references: [id],onDelete: Cascade)
+  stream   Stream @relation(fields: [streamId], references: [id],onDelete: Cascade)
+
+  @@unique([streamId, userId])
+}
+
+enum StreamType {
+  Youtube
+  Spotify
+}
+
+enum SpaceType {
+  Public
+  Private
+}
+
+enum Provider {
+  Google
+}
