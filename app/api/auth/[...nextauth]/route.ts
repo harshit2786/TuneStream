@@ -11,26 +11,50 @@ const handler = NextAuth({
     ],
     secret: process.env.JWT_SECRET,
     callbacks: {
-        async signIn(params) {
-            if (!params.user.email) {
+        async signIn({ user }) {
+            if (!user.email) {
                 return false;
             }
-            try {
-                await prismaClient.user.create({
-                    data: {
-                        email: params.user.email ?? "",
-                        Provider: "Google"
-                    }
-                })
-            }
-            catch (e) {
-                console.log(e);
-                return false;
-            }
-            return true;
-        }
 
-    }
+            try {
+                // Check if user already exists
+                const existingUser = await prismaClient.user.findFirst({
+                    where: { email: user.email },
+                });
+
+                // If user does not exist, create a new user
+                if (!existingUser) {
+                    await prismaClient.user.create({
+                        data: {
+                            email: user.email,
+                            Provider: "Google",
+                            username : user.name ?? ""
+                        },
+                    });
+                }
+            } catch (e) {
+                console.log('Error during user sign-in:', e);
+                return false;
+            }
+
+            return true;
+        },
+        async session ({session}) {
+            const email = session?.user?.email;
+            const userId = await prismaClient.user.findFirst({
+                where : {
+                    email : email ?? ""
+                },
+                select : {
+                    id : true,
+                    username : true
+                }
+            });
+            session.user.id = userId?.id ?? "";
+            session.user.username = userId?.username ?? ""
+            return session;
+        }
+    },
 })
 
 export { handler as GET, handler as POST }

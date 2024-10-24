@@ -15,7 +15,8 @@ datasource db {
 
 model User {
   id              String    @id @default(uuid())
-  email           String
+  email           String    @unique
+  username        String
   Provider        Provider
   upvotes         Upvotes[]
   streams         Stream[]
@@ -28,6 +29,7 @@ model Space {
   id              String       @id @default(uuid())
   name            String       @unique
   creatorId       String
+  timeStamp       BigInt
   creator         User         @relation("creator", fields: [creatorId], references: [id],onDelete: Cascade)
   streams         Stream[]
   userIds         User[]       @relation("users")
@@ -36,16 +38,17 @@ model Space {
 }
 
 model Stream {
-  id        String     @id @default(uuid())
-  type      StreamType
-  url       String
-  extractId String
-  active    Boolean    @default(true)
-  upvotes   Upvotes[]
-  userId    String
-  user      User       @relation(fields: [userId], references: [id])
-  spaceId   String
-  space     Space      @relation(fields: [spaceId], references: [id],onDelete: Cascade)
+  id            String          @id @default(uuid())
+  type          StreamType
+  url           String
+  extractId     String
+  active        Boolean         @default(true)
+  upvotes       Upvotes[]
+  timeStamp     BigInt
+  userId        String
+  user          User            @relation(fields: [userId], references: [id])
+  spaceId       String
+  space         Space           @relation(fields: [spaceId], references: [id],onDelete: Cascade)
 }
 
 model Upvotes {
@@ -54,7 +57,6 @@ model Upvotes {
   userId   String
   user     User   @relation(fields: [userId], references: [id],onDelete: Cascade)
   stream   Stream @relation(fields: [streamId], references: [id],onDelete: Cascade)
-
   @@unique([streamId, userId])
 }
 
