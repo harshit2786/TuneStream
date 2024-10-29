@@ -29,7 +29,7 @@ model Space {
   id              String       @id @default(uuid())
   name            String       @unique
   creatorId       String
-  timeStamp       BigInt
+  timeStamp       String
   creator         User         @relation("creator", fields: [creatorId], references: [id],onDelete: Cascade)
   streams         Stream[]
   userIds         User[]       @relation("users")
@@ -44,7 +44,7 @@ model Stream {
   extractId     String
   active        Boolean         @default(true)
   upvotes       Upvotes[]
-  timeStamp     BigInt
+  timeStamp     String
   userId        String
   user          User            @relation(fields: [userId], references: [id])
   spaceId       String

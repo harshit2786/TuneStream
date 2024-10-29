@@ -1,9 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Music, Users, ThumbsUp } from "lucide-react";
 import Link from "next/link";
-import LoginButton from "./components/Buttons/LoginButton";
-import NavItems from "./components/Buttons/NavItem";
-import Navbar from "./components/Navbar/Navbar";
 
 export default function LandingPage() {
   return (

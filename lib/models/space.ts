@@ -5,7 +5,7 @@ export interface Space {
     creator : string;
     name : string;
     type : SpaceType,
-    timestamp : number,
+    timestamp : string,
     streams : number,
     users : number
 }

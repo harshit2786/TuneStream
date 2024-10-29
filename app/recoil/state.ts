@@ -1,6 +1,13 @@
 import { Space } from '@/lib/models/space';
 import { selector } from 'recoil';
-export const spaceState = selector<Space[]>({
+import { atom } from 'recoil';
+
+export const spaceStateAtom = atom<Space[]>({
+    key: 'spaceStateAtom', // unique ID (with respect to other atoms/selectors)
+    default: [], // default value (aka initial value)
+});
+
+export const spaceStateSelector = selector<Space[]>({
     key: 'spaceState', // unique ID (with respect to other atoms/selectors)
     get: async () => {
         try {
@@ -14,5 +21,8 @@ export const spaceState = selector<Space[]>({
         catch (e) {
             console.log(e);
         }
+    },
+    set: ({ set }, newValue) => {
+        set(spaceStateAtom, newValue as Space[]);
     }
 });

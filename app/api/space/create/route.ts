@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prismaClient } from "@/lib/db";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 
 const CreateSpaceSchema = z.object({
     name: z.string(),
@@ -11,7 +12,8 @@ const CreateSpaceSchema = z.object({
 export const POST = async (req: NextRequest) => {
     try {
         const data = CreateSpaceSchema.parse(await req.json());
-        const session = await getServerSession();
+        const session = await getServerSession(authOptions)
+        console.log("session",session);
         const creatorId = session?.user?.id;
         if(!creatorId){
             return NextResponse.json({message:"Unauthorised User"},{status:403});
@@ -21,11 +23,22 @@ export const POST = async (req: NextRequest) => {
                 name: data.name,
                 creatorId: creatorId,
                 type: data.public ? "Public" : "Private",
-                timeStamp : Date.now()
+                timeStamp : String(Date.now())
             }
 
         });
-        return NextResponse.json({data:resp},{status:200});
+        console.log("resp",resp)
+        const dataSent = {
+            id : resp.id,
+            creator : session?.user?.username ?? "",
+            name : resp.name,
+            type : resp.type,
+            timeStamp : resp.timeStamp,
+            streams : 0,
+            users : 0
+        }
+        console.log("data", dataSent)
+        return NextResponse.json({data:dataSent},{status:200});
     }
     catch (e) {
         console.log(e)

@@ -27,10 +27,11 @@ export const GET = async () => {
             creator: item.creator.username, // Map `username` to `creator`
             name: item.name,
             type: item.type, // Assuming `SpaceType` is already defined as your enum
-            timestamp: Number(item.timeStamp), // Convert `bigint` to `number`
+            timestamp: item.timeStamp, // Convert `bigint` to `number`
             streams: item._count.streams, // Map `_count.streams` to `streams`
             users: item._count.userIds, // Map `_count.userIds` to `users`
         }));
+        console.log("valll")
         return NextResponse.json({ data: refactored }, { status: 200 });
     }
     catch (e) {

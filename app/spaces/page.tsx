@@ -1,15 +1,16 @@
 "use client";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Music, Users, Search } from "lucide-react";
-import { useRecoilValue } from "recoil";
-import { spaceState } from "../recoil/state";
+import { useRecoilState, useRecoilValueLoadable } from "recoil";
+import { spaceStateAtom, spaceStateSelector } from "../recoil/state";
 
 
 export default function AllSpaces() {
   const [searchTerm, setSearchTerm] = useState("");
-  const spaces = useRecoilValue(spaceState);
+  const [spaces,setSpaceState] = useRecoilState(spaceStateAtom);
+  const spaceStateLoadable = useRecoilValueLoadable(spaceStateSelector);
   const filteredSpaces = useMemo(() => {
     return spaces.filter(
       (space) =>
@@ -17,6 +18,11 @@ export default function AllSpaces() {
         space.creator.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [searchTerm, spaces]);
+  useEffect(() => {
+    if (spaceStateLoadable.state === 'hasValue') {
+      setSpaceState(spaceStateLoadable.contents);
+    }
+  }, [spaceStateLoadable, setSpaceState]);
 
   return (
     <>
