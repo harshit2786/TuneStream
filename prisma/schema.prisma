@@ -42,7 +42,7 @@ model Stream {
   type          StreamType
   url           String
   extractId     String
-  active        Boolean         @default(true)
+  active        Boolean         @default(false)
   upvotes       Upvotes[]
   timeStamp     String
   userId        String

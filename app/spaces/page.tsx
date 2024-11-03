@@ -1,16 +1,19 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Music, Users, Search } from "lucide-react";
-import { useRecoilState, useRecoilValueLoadable } from "recoil";
-import { spaceStateAtom, spaceStateSelector } from "../recoil/state";
+import useFetchSpaces from "../hooks/space"
+import { useRouter } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
 
 
 export default function AllSpaces() {
+  const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
-  const [spaces,setSpaceState] = useRecoilState(spaceStateAtom);
-  const spaceStateLoadable = useRecoilValueLoadable(spaceStateSelector);
+  const spaces = useFetchSpaces();
+  const session = useSession();
+  
   const filteredSpaces = useMemo(() => {
     return spaces.filter(
       (space) =>
@@ -18,11 +21,15 @@ export default function AllSpaces() {
         space.creator.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [searchTerm, spaces]);
-  useEffect(() => {
-    if (spaceStateLoadable.state === 'hasValue') {
-      setSpaceState(spaceStateLoadable.contents);
+  const handleJoin = (name : string) => {
+    if(!session.data){
+      signIn();
     }
-  }, [spaceStateLoadable, setSpaceState]);
+    else{
+      router.push(`/spaces/${name}`)
+    }
+  }
+
 
   return (
     <>
@@ -63,7 +70,7 @@ export default function AllSpaces() {
                 </div>
               </div>
               <div className="flex justify-between">
-                <Button className="bg-purple-600 text-white hover:bg-purple-700">
+                <Button onClick={() => handleJoin(space.name) } className="bg-purple-600 text-white hover:bg-purple-700">
                   Join Space
                 </Button>
                 <Button

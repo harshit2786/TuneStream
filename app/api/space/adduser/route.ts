@@ -39,10 +39,10 @@ export const POST = async(req:NextRequest) => {
             return NextResponse.json({message:"No space found"},{status:404});
         }
         if(findSpace.creatorId === userId){
-            return NextResponse.json({message:"Creator cannot join space"},{status:411});
+            return NextResponse.json({message:"Creator"},{status:200});
         }
         if(findSpace.userIds.find((it) => it.id === userId)){
-            return NextResponse.json({message:"You have already joined the space"},{status:411});
+            return NextResponse.json({message:"You have already joined the space"},{status:200});
         }
         if(findSpace.type === "Public"){
             await prismaClient.space.update({
@@ -63,7 +63,7 @@ export const POST = async(req:NextRequest) => {
         }
         if(findSpace.type === "Private"){
             if(findSpace.pendingUsers.find((it) => it.id === userId)){
-                return NextResponse.json({message:"You have already sent request to join"},{status:411});
+                return NextResponse.json({message:"Request Sent"},{status:200});
             }
             await prismaClient.space.update({
                 where : {
@@ -79,7 +79,7 @@ export const POST = async(req:NextRequest) => {
                     }
                 }
             });
-            return NextResponse.json({message:"Joining Success"},{status:200});
+            return NextResponse.json({message:"Request Sent"},{status:200});
         }
         return NextResponse.json({message:"Not able to add user"},{status:411});
     }
