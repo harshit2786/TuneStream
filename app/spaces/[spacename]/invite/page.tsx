@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Users, Lock } from "lucide-react";
 import useFetchSpaces from "@/app/hooks/space";
 import { useSession } from "next-auth/react";
+import toast, { Toaster } from "react-hot-toast";
+
 const Invite = () => {
   const router = useRouter();
   const { spacename } = useParams();
@@ -19,13 +21,29 @@ const Invite = () => {
         method: "POST",
         body: JSON.stringify({ spaceId: spaceData.id }),
       });
+      const data = await resp.json();
+      if (data?.message === "Success") {
+        toast("Redirecting to space", {
+            duration: 4000,
+            position: "top-center",
+          });
+          setTimeout(() => router.push(`/spaces/${spacename}`) , 4000)
+        
+      }
+      if (data?.message === "Request Sent") {
+        toast("Invitation Request Sent", {
+          duration: 4000,
+          position: "top-center",
+        });
+      }
     } catch (error) {
       console.log(error);
     }
   };
-  if (session)
+  if (session.data?.user) {
     return (
       <main className="container mx-auto px-4 py-8">
+        <Toaster />
         <div className="max-w-2xl mx-auto">
           <h1 className="text-3xl font-bold mb-8 text-center text-purple-400">
             Request to Join Space
@@ -57,9 +75,10 @@ const Invite = () => {
               </div>
             )}
           </div>
-          <form className="bg-gray-900 rounded-lg p-6 shadow-lg">
+          <div className="bg-gray-900 rounded-lg p-6 shadow-lg">
             <div className="space-y-4">
               <Button
+                onClick={handleJoin}
                 type="submit"
                 className="w-full bg-purple-600 text-white hover:bg-purple-700"
               >
@@ -70,10 +89,13 @@ const Invite = () => {
                   : ""}
               </Button>
             </div>
-          </form>
+          </div>
         </div>
       </main>
     );
+  } else {
+    <></>
+  }
 };
 
 export default Invite;
