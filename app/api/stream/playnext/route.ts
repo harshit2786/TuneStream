@@ -39,7 +39,7 @@ export const POST = async (req: NextRequest) => {
         if(!resp){
             return NextResponse.json({ message: "Unauthorised User" }, { status: 403 });
         }
-        if(resp.streams.length === 0){
+        if(resp.streams.length === 0 || resp.streams.filter((it) => !it.active).length === 0 ){
             return NextResponse.json({ message: "No available streams" }, { status: 404 });
         }
         else{
@@ -65,7 +65,7 @@ export const POST = async (req: NextRequest) => {
                         active : true
                     }
                 });
-                return NextResponse.json({ message: "Success" }, { status: 200 })
+                return NextResponse.json({ data: "Success" }, { status: 200 })
             }
             catch(e){
                 console.log(e);
