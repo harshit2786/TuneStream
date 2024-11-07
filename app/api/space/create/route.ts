@@ -13,7 +13,6 @@ export const POST = async (req: NextRequest) => {
     try {
         const data = CreateSpaceSchema.parse(await req.json());
         const session = await getServerSession(authOptions)
-        console.log("session",session);
         const creatorId = session?.user?.id;
         if(!creatorId){
             return NextResponse.json({message:"Unauthorised User"},{status:403});

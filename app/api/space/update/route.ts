@@ -1,3 +1,4 @@
+import { authOptions } from "@/lib/authOptions";
 import { prismaClient } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
@@ -12,7 +13,7 @@ const UpdateSchema = z.object({
 export const POST = async(req:NextRequest) => {
     try{
         const data = UpdateSchema.parse(await req.json());
-        const session = await getServerSession();
+        const session = await getServerSession(authOptions);
         const creatorId = session?.user?.id;
         if(!creatorId){
             return NextResponse.json({message:"Unauthorized"},{status:403});

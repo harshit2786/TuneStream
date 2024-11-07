@@ -20,7 +20,7 @@ const NavItems = () => {
         </Link>
         <Link
           className="text-sm font-medium hover:text-purple-400 transition-colors"
-          href="#"
+          href="/dashboard"
         >
           Dashboard
         </Link>

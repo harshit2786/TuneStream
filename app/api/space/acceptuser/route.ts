@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { prismaClient } from "@/lib/db";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 
 const AcceptSchema = z.object({
     spaceId : z.string(),
@@ -11,7 +12,7 @@ const AcceptSchema = z.object({
 export const POST = async (req: NextRequest) => {
     try {
         const data = AcceptSchema.parse(await req.json());
-        const session = await getServerSession();
+        const session = await getServerSession(authOptions);
         const creatorId = session?.user?.id;
         if(!creatorId){
             return NextResponse.json({message:"Unauthorised User"},{status:403});
