@@ -16,6 +16,7 @@ export const GET = async () => {
             },
             select : {
                 id :true,
+                name : true,
                 pendingUsers : true
             }
         });

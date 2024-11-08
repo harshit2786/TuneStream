@@ -21,6 +21,11 @@ export const POST = async (req: NextRequest) => {
             where : {
                 id : data.spaceId,
                 creatorId : creatorId,
+                pendingUsers : {
+                    some : {
+                        id : data.userId
+                    }
+                }
             },
         });
         if(!space){
