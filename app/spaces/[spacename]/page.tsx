@@ -22,6 +22,7 @@ const SpacePage = () => {
   const [currentStream, setCurrentStream] = useState<Streams | null>(null);
   const [youtubeLink, setYoutubeLink] = useState("");
   const session = useSession();
+  const [socket, setSocket] = useState<WebSocket | null>(null);
 
   const handlePlayNext = async () => {
     try {
@@ -105,6 +106,36 @@ const SpacePage = () => {
       fetchSpace();
     }
   }, [spacename]);
+  useEffect(() => {
+    console.log("sss", socket);
+    if (!socket) {
+      return;
+    }
+    socket.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.command === "fetch") {
+        fetchStreams();
+      }
+    };
+  }, [socket]);
+  useEffect(() => {
+    if (spaceDetails?.id) {
+      const ws = new WebSocket(
+        `${process.env.NEXT_PUBLIC_WS}/${spaceDetails.id}`
+      );
+      ws.onopen = () => {
+        console.log("Connected");
+        setSocket(ws);
+      };
+      ws.onclose = () => {
+        console.log("Disconnected");
+        setSocket(null);
+      };
+      return () => {
+        ws.close();
+      };
+    }
+  }, [spaceDetails]);
 
   if (!spaceDetails) return <></>;
 
@@ -216,7 +247,11 @@ const SpacePage = () => {
                   return b.upvotes.length - a.upvotes.length;
                 })
                 .map((song, index) => (
-                  <StreamsQueue setStreams={setStreams} stream={song} key={index}  />
+                  <StreamsQueue
+                    setStreams={setStreams}
+                    stream={song}
+                    key={index}
+                  />
                 ))}
             </ScrollArea>
           </div>

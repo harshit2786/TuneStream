@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prismaClient } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
+import WebSocketBroadcaster from "@/lib/broadcasting";
 
 const AddUpvoteSchema = z.object({
     streamId: z.string()
@@ -17,18 +18,18 @@ export const POST = async (req: NextRequest) => {
             return NextResponse.json({ message: "Unauthorised User" }, { status: 403 });
         }
         const resp = await prismaClient.stream.findFirst({
-            where : {
-                id : data.streamId,
+            where: {
+                id: data.streamId,
             }
         });
-        if(!resp){
+        if (!resp) {
             return NextResponse.json({ message: "Stream not found" }, { status: 411 });
         }
         const spaceId = resp.spaceId;
         const resp1 = await prismaClient.space.findFirst({
-            where : {
-                id : spaceId,
-                creatorId : userId
+            where: {
+                id: spaceId,
+                creatorId: userId
             }
         });
         const resp2 = await prismaClient.space.findFirst({
@@ -41,23 +42,26 @@ export const POST = async (req: NextRequest) => {
                 }
             }
         });
-        if(resp1 || resp2){
-            try{
+        if (resp1 || resp2) {
+            try {
                 await prismaClient.upvotes.create({
-                    data : {
-                        streamId : data.streamId,
-                        userId : userId
+                    data: {
+                        streamId: data.streamId,
+                        userId: userId
                     }
                 });
+
+                const broadcaster = WebSocketBroadcaster.getInstance(process.env.NEXT_WEBSOCKET_ENDPOINT ?? "", resp1 ? resp1.id : resp2 ? resp2.id : "");
+                broadcaster.broadcast();
                 return NextResponse.json({ message: "Success" }, { status: 200 });
             }
-            catch(e){
+            catch (e) {
                 console.log(e);
                 return NextResponse.json({ message: "Incorrect Format" }, { status: 422 });
             }
-            
+
         }
-        else{
+        else {
             return NextResponse.json({ message: "Stream not found" }, { status: 404 });
         }
     }

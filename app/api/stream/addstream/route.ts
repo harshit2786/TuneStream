@@ -4,6 +4,7 @@ import { prismaClient } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/authOptions";
 import { YT_REGEX } from "@/lib/utils";
+import WebSocketBroadcaster from "@/lib/broadcasting";
 
 const AddStreamSchema = z.object({
     url: z.string(),
@@ -35,6 +36,7 @@ export const POST = async (req: NextRequest) => {
                 creatorId: userId
             }
         });
+        const broadcaster = WebSocketBroadcaster.getInstance(process.env.NEXT_WEBSOCKET_ENDPOINT ?? "" , data.spaceId);
         if (resp1 || resp2) {
             const isValid = data.url.match(YT_REGEX);
             if (!isValid) {
@@ -52,6 +54,7 @@ export const POST = async (req: NextRequest) => {
                     timeStamp: String(Date.now())
                 }
             });
+            broadcaster.broadcast();
             return NextResponse.json({ message: "Success" }, { status: 200 });
         }
         else {
