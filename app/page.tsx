@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { Music, Users, ThumbsUp } from "lucide-react";
 import Link from "next/link";
+import GetStarted from "./components/Buttons/GetStarted";
 
 export default function LandingPage() {
   return (
@@ -19,15 +19,7 @@ export default function LandingPage() {
                 </p>
               </div>
               <div className="space-x-4">
-                <Button className="bg-purple-600 text-white hover:bg-purple-700">
-                  Get Started
-                </Button>
-                <Button
-                  variant="outline"
-                  className="border-purple-600 text-purple-400 hover:bg-purple-600 hover:text-white"
-                >
-                  Learn More
-                </Button>
+                <GetStarted />
               </div>
             </div>
           </div>
@@ -110,11 +102,6 @@ export default function LandingPage() {
                   Join TuneStream today and start creating collaborative music
                   experiences for your events.
                 </p>
-              </div>
-              <div className="w-full max-w-sm space-y-2">
-                <Button className="w-full bg-purple-600 text-white hover:bg-purple-700">
-                  Get Started for Free
-                </Button>
               </div>
             </div>
           </div>
