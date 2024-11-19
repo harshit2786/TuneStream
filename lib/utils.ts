@@ -14,3 +14,6 @@ export function parseYtData(details) {
 }
 
 export const YT_REGEX = /^(?:(?:https?:)?\/\/)?(?:www\.)?(?:m\.)?(?:youtu(?:be)?\.com\/(?:v\/|embed\/|watch(?:\/|\?v=))|youtu\.be\/)((?:\w|-){11})(?:\S+)?$/;
+
+export const colors = ["#007bff","#6c757d","#ffc107","#dc3545","#28a745"];
+export const numColor = colors.length;

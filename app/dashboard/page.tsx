@@ -4,7 +4,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Check, Plus, X } from "lucide-react";
 import { signIn, useSession } from "next-auth/react";
-import Image from "next/image";
 import React, { useEffect, useMemo, useState } from "react";
 import { Space } from "@/lib/models/space";
 import useFetchSpaces from "../hooks/space";
@@ -12,6 +11,7 @@ import { useRouter } from "next/navigation";
 import CreateModal from "../components/CreateSpace/Modal";
 import { ParsedPendingUser, PendingUser } from "@/lib/models/pendingUsers";
 import toast, { Toaster } from "react-hot-toast";
+import { colors, numColor } from "@/lib/utils";
 
 const DashBoard = () => {
   const { data: session, status } = useSession();
@@ -119,14 +119,25 @@ const DashBoard = () => {
                   key={space.id}
                   className="bg-gray-900 rounded-lg p-6 shadow-lg"
                 >
+                  
                   <div className="flex items-center mb-4">
-                    <Image
-                      src={""}
-                      alt={space.name}
-                      width={50}
-                      height={50}
-                      className="rounded-full mr-4"
-                    />
+                    <div
+                      style={{
+                        width: 50,
+                        height: 50,
+                        backgroundColor: colors[Number(space.name.length) % numColor],
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: "50%",
+                        color: "#fff",
+                        fontWeight: "bold",
+                        fontSize: "1.5rem",
+                        marginRight: "1rem",
+                      }}
+                    >
+                      {space.name.charAt(0)}
+                    </div>
                     <div>
                       <h3 className="text-xl font-semibold text-purple-400">
                         {space.name}
@@ -163,13 +174,23 @@ const DashBoard = () => {
                   className="bg-gray-900 rounded-lg p-6 shadow-lg"
                 >
                   <div className="flex items-center mb-4">
-                    <Image
-                      src={""}
-                      alt={space.name}
-                      width={50}
-                      height={50}
-                      className="rounded-full mr-4"
-                    />
+                  <div
+                      style={{
+                        width: 50,
+                        height: 50,
+                        backgroundColor: colors[Number(space.name.length) % numColor],
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRadius: "50%",
+                        color: "#fff",
+                        fontWeight: "bold",
+                        fontSize: "1.5rem",
+                        marginRight: "1rem",
+                      }}
+                    >
+                      {space.name.charAt(0)}
+                    </div>
                     <div>
                       <h3 className="text-xl font-semibold text-purple-400">
                         {space.name}
