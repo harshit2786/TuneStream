@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+### Installation
+
+To get started with the project, clone the repository and install the necessary dependencies.
+
+```bash
+git clone https://github.com/harshit2786/tunestream.git
+cd project-directory
+npm install
+```
+
+## Environment Variables
+
+Create a .env.local file in the root directory of your project and add the following:
+
+```bash
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+NEXTAUTH_SECRET=your-nextauth-secret
+NEXT_PUBLIC_YOUTUBE_API_KEY=your-youtube-api-key
+NEXT_WEBSOCKET_ENDPOINT=your-websocket-endpoint
+NEXT_PUBLIC_WS=your-websocket-url
+DATABASE_URL=your-database-url
+```
 
 ## Getting Started
 
-First, run the development server:
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Run using Docker
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+To run the application using Docker, follow these steps:
 
-## Learn More
+1. Build the Docker image:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+docker build -t tunestream .
+```
+2. Run the Docker container:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+docker run -p 3000:3000 --env-file .env tunestream
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Usage
 
-## Deploy on Vercel
+TuneStream offers the following features:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+* Real-Time Music Queuing: Developed using Next.js for a responsive frontend and PostgreSQL with Prisma ORM for robust data management.
+* Secure User Authentication: Integrated NextAuth.js for secure user authentication, allowing users to create music spaces, add songs, and vote on tracks.
+* State Management: Utilized Recoil for efficient state management across the application.
+* Real-Time Updates: Implemented a FastAPI WebSocket server for real-time updates on upvotes, downvotes, and new song additions, enhancing user interaction during events.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Key Features
+
+* Create Music Spaces: Users can create and manage their own music spaces for parties and events.
+* Add Songs: Participants can add songs to the queue, ensuring a dynamic and enjoyable playlist.
+* Vote on Tracks: Users can upvote or downvote tracks, allowing the community to decide the playlist's flow.
+* Real-Time Interaction: Changes to the queue and voting results are updated in real-time, providing a seamless user experience.
